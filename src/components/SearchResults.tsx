@@ -1,5 +1,5 @@
 import React from 'react';
-import { ExternalLink, Clock, Globe } from 'lucide-react';
+import { ExternalLink, Clock, Globe, Eye } from 'lucide-react';
 
 interface SearchResult {
   title: string;
@@ -14,6 +14,7 @@ interface SearchResultsProps {
   totalResults: number;
   searchTime: string;
   loading: boolean;
+  onOpenInApp?: (url: string, title: string) => void;
 }
 
 const SearchResults: React.FC<SearchResultsProps> = ({
@@ -21,7 +22,8 @@ const SearchResults: React.FC<SearchResultsProps> = ({
   query,
   totalResults,
   searchTime,
-  loading
+  loading,
+  onOpenInApp
 }) => {
   if (loading) {
     return (
@@ -85,22 +87,39 @@ const SearchResults: React.FC<SearchResultsProps> = ({
             </div>
 
             {/* Title */}
-            <h3 className="text-xl text-blue-600 hover:underline mb-1">
-              <a
-                href={result.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center group-hover:text-blue-800 transition-colors"
+            <h3 className="text-xl text-blue-600 mb-1">
+              <button
+                onClick={() => onOpenInApp?.(result.url, result.title)}
+                className="text-left hover:underline group-hover:text-blue-800 transition-colors w-full"
               >
                 {result.title}
-                <ExternalLink className="w-4 h-4 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />
-              </a>
+              </button>
             </h3>
 
             {/* Description */}
             <p className="text-gray-700 text-sm leading-relaxed">
               {result.description || 'No description available'}
             </p>
+
+            {/* Action Buttons */}
+            <div className="flex items-center space-x-4 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <button
+                onClick={() => onOpenInApp?.(result.url, result.title)}
+                className="flex items-center space-x-1 text-blue-600 hover:text-blue-800 text-sm"
+              >
+                <Eye className="w-4 h-4" />
+                <span>View in DSE</span>
+              </button>
+              <a
+                href={result.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center space-x-1 text-gray-600 hover:text-gray-800 text-sm"
+              >
+                <ExternalLink className="w-4 h-4" />
+                <span>Open in new tab</span>
+              </a>
+            </div>
           </div>
         ))}
       </div>

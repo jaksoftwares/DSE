@@ -30,9 +30,9 @@ app.post('/api/search', async (req, res) => {
 
     res.json({
       query,
-      results,
-      totalResults: results.length,
-      searchTime: `${searchTime}s`,
+      results: results.results || [],
+      totalResults: results.totalResults || 0,
+      searchTime: `${searchTime} seconds`,
       level
     });
 

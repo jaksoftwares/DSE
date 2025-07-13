@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from
 import Header from './components/Header';
 import SearchBox from './components/SearchBox';
 import SearchResults from './components/SearchResults';
+import InAppBrowser from './components/InAppBrowser';
 import Footer from './components/Footer';
 import Images from './pages/Images';
 import Videos from './pages/Videos';
@@ -36,6 +37,15 @@ function SearchApp() {
   const [searchResults, setSearchResults] = useState<SearchResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [currentQuery, setCurrentQuery] = useState('');
+  const [browserState, setBrowserState] = useState<{
+    isOpen: boolean;
+    url: string;
+    title: string;
+  }>({
+    isOpen: false,
+    url: '',
+    title: ''
+  });
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -73,13 +83,35 @@ function SearchApp() {
   const handleLogoClick = () => {
     setSearchResults(null);
     setCurrentQuery('');
+    setBrowserState({ isOpen: false, url: '', title: '' });
     navigate('/');
+  };
+
+  const handleOpenInApp = (url: string, title: string) => {
+    setBrowserState({
+      isOpen: true,
+      url,
+      title
+    });
+  };
+
+  const handleCloseBrowser = () => {
+    setBrowserState({ isOpen: false, url: '', title: '' });
   };
 
   const isHomePage = location.pathname === '/' && !searchResults && !loading;
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
+      {/* In-App Browser */}
+      {browserState.isOpen && (
+        <InAppBrowser
+          url={browserState.url}
+          title={browserState.title}
+          onClose={handleCloseBrowser}
+        />
+      )}
+
       <Header showLogo={!isHomePage} onLogoClick={handleLogoClick} />
       
       <main className="flex-1 flex flex-col">
@@ -124,6 +156,7 @@ function SearchApp() {
                 totalResults={searchResults?.totalResults || 0}
                 searchTime={searchResults?.searchTime || ''}
                 loading={loading}
+                onOpenInApp={handleOpenInApp}
               />
             </div>
           )
