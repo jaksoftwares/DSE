@@ -25,6 +25,14 @@ const SearchResults: React.FC<SearchResultsProps> = ({
   loading,
   onOpenInApp
 }) => {
+  const handleResultClick = (url: string, title: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    console.log('Opening URL in DSE browser:', url);
+    if (onOpenInApp) {
+      onOpenInApp(url, title);
+    }
+  };
+
   if (loading) {
     return (
       <div className="max-w-2xl mx-auto mt-8">
@@ -88,12 +96,13 @@ const SearchResults: React.FC<SearchResultsProps> = ({
 
             {/* Title */}
             <h3 className="text-xl text-blue-600 mb-1">
-              <button
-                onClick={() => onOpenInApp?.(result.url, result.title)}
-                className="text-left hover:underline group-hover:text-blue-800 transition-colors w-full"
+              <a
+                href={result.url}
+                onClick={(e) => handleResultClick(result.url, result.title, e)}
+                className="hover:underline group-hover:text-blue-800 transition-colors cursor-pointer"
               >
                 {result.title}
-              </button>
+              </a>
             </h3>
 
             {/* Description */}

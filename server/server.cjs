@@ -1,7 +1,14 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const SearchEngine = require('./search-engine.cjs');
+
+let SearchEngine;
+try {
+  SearchEngine = require('./search-engine.cjs');
+} catch (error) {
+  console.error('Failed to load SearchEngine:', error.message);
+  process.exit(1);
+}
 
 const app = express();
 const PORT = 3001;
@@ -11,7 +18,14 @@ app.use(cors());
 app.use(express.json());
 
 // Initialize search engine
-const searchEngine = new SearchEngine();
+let searchEngine;
+try {
+  searchEngine = new SearchEngine();
+  console.log('✅ SearchEngine initialized successfully');
+} catch (error) {
+  console.error('❌ Failed to initialize SearchEngine:', error.message);
+  process.exit(1);
+}
 
 // API Routes
 app.post('/api/search', async (req, res) => {

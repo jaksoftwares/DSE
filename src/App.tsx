@@ -88,9 +88,17 @@ function SearchApp() {
   };
 
   const handleOpenInApp = (url: string, title: string) => {
+    console.log('Opening in DSE app browser:', url, title);
+    
+    // Ensure URL has protocol
+    let fullUrl = url;
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      fullUrl = 'https://' + url;
+    }
+    
     setBrowserState({
       isOpen: true,
-      url,
+      url: fullUrl,
       title
     });
   };
